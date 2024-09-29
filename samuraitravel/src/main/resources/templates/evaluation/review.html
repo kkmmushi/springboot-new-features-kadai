@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">    
+    <head>
+        <div th:replace="~{fragment :: meta}"></div>   
+             
+        <div th:replace="~{fragment :: styles}"></div>
+          
+        <title>レビュー投稿</title>   
+    </head>
+    <body>
+        <div class="samuraitravel-wrapper">
+            <!-- ヘッダー -->
+            <div th:replace="~{fragment :: header}"></div>
+            
+            <main>
+                <div class="container samuraitravel-container pb-5">
+                    <div class="row justify-content-center">
+                        <div class="col-xxl-9 col-xl-10 col-lg-11">
+                            <nav class="my-3" style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                                <ol class="breadcrumb mb-0 text-center"> 
+                                    <li class="breadcrumb-item"><a th:href="@{/}">ホーム</a></li>  
+									<li class="breadcrumb-item active" ><a th:href="@{/houses}">民宿一覧</a></li>   
+									<li class="breadcrumb-item"><a th:href="@{/houses/{id}(id=${house.id})}">民宿詳細</a></li>                     
+                                    <li class="breadcrumb-item active" aria-current="page">レビュー投稿</li>
+                                </ol>
+                            </nav> 
+                            
+                            <h1 class="mb-3 text-center" th:text="${house.name}+のレビュー投稿"></h1>  
+            
+
+
+
+<form class="review-form" th:action="@{/houses/{id}/evaluation/review/confirm(id=${house.id})}" method="post" th:object="${reviewAddForm}">
+    <div class="form-group">
+        <label for="rating">評価</label>
+        <select class="form-control" th:field="*{reviewRank}">
+            <option th:each="rating : ${ratings}" th:value="${rating}" th:text="${rating}"></option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="comment">コメント</label>
+        <textarea class="form-control mb-3" th:field="*{reviewContent}" rows="5"></textarea>
+    </div>
+	<div>
+    <button type="submit" class="btn text-white shadow-sm w-100 samuraitravel-btn">投稿</button>
+	</div>
+	</form>
+
+
+
+      <!-- フッター -->
+            <div th:replace="~{fragment :: footer}"></div>
+        </div>    
+        
+        <div th:replace="~{fragment :: scripts}"></div>  
+  </body>
+</html>
