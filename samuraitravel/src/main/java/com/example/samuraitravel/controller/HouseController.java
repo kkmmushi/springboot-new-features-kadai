@@ -15,11 +15,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.samuraitravel.entity.House;
+import com.example.samuraitravel.entity.Likes;
 import com.example.samuraitravel.entity.Review;
 import com.example.samuraitravel.entity.User;
 import com.example.samuraitravel.form.ReservationInputForm;
 import com.example.samuraitravel.repository.HouseRepository;
+import com.example.samuraitravel.repository.LikeRepository;
 import com.example.samuraitravel.repository.ReviewRepository;
+import com.example.samuraitravel.repository.UserRepository;
 import com.example.samuraitravel.security.UserDetailsImpl;
 
 
@@ -28,11 +31,15 @@ import com.example.samuraitravel.security.UserDetailsImpl;
 public class HouseController {
     private final HouseRepository houseRepository;
     private final ReviewRepository reviewRepository;
+    private final UserRepository userRepository;
+    private final LikeRepository likeRepository;
     
 
-    public HouseController(HouseRepository houseRepository , ReviewRepository reviewRepository) {
+    public HouseController(HouseRepository houseRepository , ReviewRepository reviewRepository, UserRepository userRepository,LikeRepository likeRepository) {
         this.houseRepository = houseRepository; 
         this.reviewRepository = reviewRepository;
+        this.userRepository =userRepository;
+        this.likeRepository = likeRepository;
     }     
   
     @GetMapping
@@ -79,6 +86,40 @@ public class HouseController {
         
         return "houses/index";
     }
+  
+    
+    @GetMapping ("/{id}/deleteLike") 
+    public String deleteLike(@PathVariable(name = "id") Integer id, 
+			@AuthenticationPrincipal UserDetailsImpl userDetails,
+ 			Model model) {
+    		House house = houseRepository.getReferenceById(id);
+    		User user = userDetails.getUser();
+    	    Likes likes  = likeRepository.findByHouseAndUser(house,user);
+  
+    		model.addAttribute("addLike",true);
+    		model.addAttribute("house" ,house);
+    		likeRepository.delete(likes);
+
+    		return "houses/show";
+    	}
+ 
+    @GetMapping ("/{id}/addLike") 
+    public String addLike(@PathVariable(name = "id") Integer id, 
+			@AuthenticationPrincipal UserDetailsImpl userDetails,
+ 			Model model) {
+    		House house = houseRepository.getReferenceById(id);
+    		User user = userDetails.getUser();
+
+    		model.addAttribute("deleteLike",true);
+    		Likes newLike =new Likes();
+    		newLike.setHouse(house);
+    		newLike.setUser(user);
+    		likeRepository.save(newLike);
+
+    		model.addAttribute("house",house);
+    		
+    		return "houses/show";
+    	}
     
     @GetMapping("/{id}")
     public String show(@PathVariable(name = "id") Integer id, 
@@ -91,6 +132,22 @@ public class HouseController {
         List<Review> reviews = reviewRepository.findTop6ByHouseOrderByUpdatedAtDesc(house);
         List<Review> reviewsAll = reviewRepository.findByHouseOrderByUpdatedAtAsc(house);   
   
+       
+   
+      if(userDetails != null) {  
+
+          User user = userDetails.getUser();
+          Likes likes  = likeRepository.findByHouseAndUser(house,user);
+        
+        //お気に入り情報がない場合
+        if(likes==null){
+         model.addAttribute("addLike",true);
+
+        }else {
+        	model.addAttribute("deleteLike",true);
+        }
+         
+      }
         // レビューがない場合のメッセージ
         if (reviews.isEmpty()) {
             model.addAttribute("noReviewsMessage", "まだレビューがありません。");
@@ -100,6 +157,7 @@ public class HouseController {
          Review userReview = null;
           if(userDetails != null) {
         	  User user = userDetails.getUser();
+        	  
         	  userReview = reviewRepository.findByUserAndHouse(user,house);
           }
           if(userReview != null) {                    

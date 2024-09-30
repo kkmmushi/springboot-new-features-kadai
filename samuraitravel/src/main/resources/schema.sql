@@ -67,3 +67,12 @@ CREATE TABLE IF NOT EXISTS reviews(
 	FOREIGN KEY (house_id) REFERENCES houses(id),
 	FOREIGN KEY (user_id) REFERENCES users(id)
 );
+
+CREATE TABLE IF NOT EXISTS likes(
+	id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	user_id INT NOT NULL,
+	house_id INT NOT NULL,
+	FOREIGN KEY (user_id) REFERENCES users(id),
+	FOREIGN KEY (house_id) REFERENCES houses(id),
+	UNIQUE(user_id,house_id)
+);

@@ -139,3 +139,5 @@ INSERT IGNORE INTO reviews (id, house_id, user_id, review_rank, review_content) 
 INSERT IGNORE INTO reviews (id, house_id, user_id, review_rank, review_content) VALUES (25, 1, 25, "★★★★★", '家族で楽しい時間を過ごせました。');
 INSERT IGNORE INTO reviews (id, house_id, user_id, review_rank, review_content) VALUES (26, 1, 26, "★★★★☆", '次回も利用したいです。');
 
+--likesテーブル
+INSERT IGNORE INTO likes(id,house_id,user_id) VALUES (1,1,1);

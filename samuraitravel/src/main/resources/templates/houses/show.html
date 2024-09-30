@@ -29,18 +29,22 @@
                           
 							
 							 <div th:if="${param.reviewAdded}" class="alert alert-info">
-							    レビューが完了しました。
+							    <a>レビューが完了しました。</a>
 							</div>   
 							
 							 <div th:if="${param.reviewDeleted}" class="alert alert-info">
-							    レビューを削除しました。
+							    <a>レビューを削除しました。</a>
 							</div>   
 							 <div th:if="${param.reviewEdited}" class="alert alert-info">
 							    レビューを更新しました。
-							</div>   
-
-							  
-                            <h1 class="mb-4 text-center" th:text="${house.getName()}"></h1>   <!--民宿名表示-->                                                      
+							</div>
+							   
+							<div class="d-flex justify-content-end">
+							<a sec:authorize="isAuthenticated()" th:if="${addLike}" th:href="@{/houses/{id}/addLike(id=${house.id})}" class ="text-align:right">&#9825;この宿をお気に入りに追加する</a> 
+							<a sec:authorize="isAuthenticated()" th:if="${deleteLike}" th:href="@{/houses/{id}/deleteLike(id=${house.id})}" class ="text-align:right">&#9829;お気に入り済</a>  
+							</div>
+                            
+							<h1 class="mb-4 text-center" th:text="${house.getName()}"></h1>   <!--民宿名表示-->                                                      
                             
                             <div th:if="${errorMessage}" class="alert alert-danger">
                                 <span th:text="${errorMessage}"></span>
