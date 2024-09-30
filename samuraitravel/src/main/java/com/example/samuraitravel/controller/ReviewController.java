@@ -79,7 +79,7 @@ public class ReviewController {
         model.addAttribute("ratings", ratings);
         model.addAttribute("reviewAddForm", new ReviewAddForm()); // フォームの初期化
         }
-        return "/evaluation/review"; // フォームのテンプレート名
+        return "evaluation/review"; // フォームのテンプレート名
     }
     
     @PostMapping("/houses/{id}/evaluation/review/confirm")
@@ -155,7 +155,7 @@ public class ReviewController {
         	model.addAttribute("reviewEditForm", reviewEditForm);
         }
         }
-        return "/evaluation/edit"; // フォームのテンプレート名
+        return "evaluation/edit"; // フォームのテンプレート名
     }
     
     @PostMapping("/houses/{id}/evaluation/review/edit/confirm")
